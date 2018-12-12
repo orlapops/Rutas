@@ -1,0 +1,304 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{visita.nombre}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="animated fadeIn">
+    <ion-slides pager="true" margin-bottom>
+        <ion-slide *ngFor="let image of visita.images" (click)="presentImage(image)">
+            <img [src]="image">
+            <div class="shadow"></div>
+        </ion-slide>
+    </ion-slides>
+    <div *ngIf="!_cliente.clienteActual">
+        <ion-card>
+            <ion-item padding class="animated fadeIn fast">
+                <ion-text color="warning"> Cargando datos cliente. Por favor espere...</ion-text>
+                <ion-spinner name="bubbles"></ion-spinner>
+            </ion-item>
+        </ion-card>
+    </div>
+    <div padding-horizontal *ngIf="_cliente.clienteActual">
+
+        <ion-segment [(ngModel)]="visitaSegment" color="primary">
+            <ion-segment-button value="details">
+                Detalles
+            </ion-segment-button>
+            <ion-segment-button value="cartera">
+                Cartera
+            </ion-segment-button>
+            <ion-segment-button value="facturar">
+                Inventario
+            </ion-segment-button>
+        </ion-segment>
+
+        <div [ngSwitch]="visitaSegment">
+            <div *ngSwitchCase="'details'">
+
+                <ion-card no-margin margin-top margin-bottom class="animated fadeIn">
+                    <ion-fab *ngIf="estadoVisita == ''" vertical="top" horizontal="end" slot="fixed">
+                        <ion-fab-button color="success" (click)="registrarIngresoVisita()">
+                            <ion-icon name="log-in"></ion-icon>
+                        </ion-fab-button>
+                    </ion-fab>
+                    <ion-fab *ngIf="estadoVisita == 'A'" vertical="center" horizontal="start" slot="fixed">
+                        <ion-fab-button color="warning" (click)="actualizarGps()">
+                            <ion-icon name="pin"></ion-icon>
+                            <ion-icon name="create"></ion-icon>
+                        </ion-fab-button>
+                    </ion-fab>
+
+                    <ion-fab *ngIf="estadoVisita == 'A'" vertical="center" horizontal="end" slot="fixed">
+                        <ion-fab-button color="danger" (click)="cerrarVisita()">
+                            <ion-icon name="log-out"></ion-icon>
+                        </ion-fab-button>
+                    </ion-fab>
+
+                    <ion-card-content no-padding>
+                        <agm-map [latitude]="visita.data.latitud" [longitude]="visita.data.longitud" [zoom]="14" [zoomControl]="false" [styles]="agmStyles" [streetViewControl]="false">
+                            <agm-marker [latitude]="visita.data.latitud" [longitude]="visita.data.longitud"></agm-marker>
+                        </agm-map>
+                    </ion-card-content>
+                    <ion-card-content class="bg-white">
+                        <ion-label>
+                            <h2 [ngClass]="{'fw700 text-white': !true}">
+                                <div class="fechavisita">
+                                    <ion-icon name="calendar" slot="start" color="secondary" *ngIf="true"></ion-icon>
+                                    <ion-icon name="mail-open" slot="start" color="primary" *ngIf="!true"></ion-icon>
+                                    <ion-text color="primary">{{ _parEmpre.cadafecha(visita.data.fecha_in) | date: 'shortDate'}}</ion-text>
+                                </div>
+                                <div class="horavisita">
+                                    <ion-icon name="time" slot="end" color="tertiary" *ngIf="true"></ion-icon>
+                                    <ion-text color="primary"> {{ _parEmpre.cadhoramil(visita.data.hora_in) }}</ion-text>
+                                </div>
+                                <!-- <ion-text color="primary">Mensaje</ion-text> -->
+                            </h2>
+                            <hr>
+                            <h2 class="clientevisita">
+                                <ion-text color="dark"> {{visita.data.nombre}}</ion-text>
+                            </h2>
+                            <h2 class="clientevisita">
+                                Aui cliente df fb cliente
+                                <ion-text color="dark"> {{_cliente.clienteactualA }}</ion-text>
+                            </h2>
+                            <h3>
+                                <div class="direcvisita">
+                                    <ion-icon name="pin" slot="start" class="direcvisita"></ion-icon>
+                                    <!-- <p [ngClass]="{'text-light': !true}"> -->
+                                    <ion-text color="dark"> {{visita.data.direccion}} </ion-text>
+                                    <!-- </p> -->
+                                </div>
+                            </h3>
+                            <h4 class="notavisita">
+                                <p [ngClass]="{'text-light': !true}">
+                                    <ion-text color="dark">{{ visita.data.notaing }}</ion-text>
+                                </p>
+                                <p [ngClass]="{'text-light': !true}">
+                                    <ion-text color="dark">{{ visita.data.notas }}</ion-text>
+                                </p>
+                            </h4>
+                        </ion-label>
+                        <!-- 
+                      <h2>
+                            <ion-text color="primary">
+                                <strong>Dirección</strong>
+                            </ion-text>
+                        </h2>
+                        <p>{{visita.data.direccion}}</p> -->
+                    </ion-card-content>
+                </ion-card>
+
+                <ion-card no-margin margin-bottom class="bg-white animated fadeIn">
+                    <ion-card-content>
+
+                        <ion-card-subtitle>
+                            <ion-text color="primary">Cliente: {{_cliente.clienteActual.cod_tercer}} </ion-text>
+                        </ion-card-subtitle>
+
+                        <ion-text color="dark" margin-bottom>
+                            <p>{{_cliente.clienteActual.cliente}}</p>
+                        </ion-text>
+                        <ion-text color="dark" margin-bottom>
+                            <p>Forma Pago: {{_cliente.clienteActual.for_pago}}</p>
+                        </ion-text>
+
+                    </ion-card-content>
+                </ion-card>
+
+                <!-- <ion-card no-margin margin-bottom class="bg-white animated fadeIn">
+                    <ion-card-content>
+                        <ion-card-title margin-bottom>
+                            <ion-text color="primary">{{ 'app.label.amenities' | translate }}</ion-text>
+                        </ion-card-title>
+
+                        <ion-chip margin-left color="primary" *ngFor="let services of visita.services">
+                            <ion-chip-icon [name]="services.icon"></ion-chip-icon>
+                            <ion-label>{{services.name}}</ion-label>
+                        </ion-chip>
+                    </ion-card-content>
+                </ion-card>
+
+                <ion-card no-margin margin-bottom class="bg-white animated fadeIn">
+                    <ion-card-content>
+                        <ion-card-title margin-bottom>
+                            <ion-text color="primary">{{ 'app.label.features' | translate }}</ion-text>
+                        </ion-card-title>
+
+                        <ion-text color="dark">
+                            <p>{{visita.features}}</p>
+                        </ion-text>
+                    </ion-card-content>
+                </ion-card> -->
+
+            </div>
+
+            <div *ngIf="_visitas.visita_activa">
+                <!-- <div *ngSwitchCase="'cartera'" [@staggerIn]='_visitas.visita_activa.cartera.length'> -->
+                <div *ngSwitchCase="'cartera'" [@staggerIn]='_cliente.clienteActual.cartera.length'>
+                    <ion-card class="facturaCard">
+                        <ion-card-header>
+                            <!-- <ion-card-subtitle>Cartera {{_visitas.visita_activa.datosgen.nombre}}</ion-card-subtitle> -->
+                            <ion-card-subtitle>Cartera {{_visitas.visita_activa.datosgen.nombre}}</ion-card-subtitle>
+                        </ion-card-header>
+                        <ion-card-content>
+                            <!-- <ion-card no-margin margin-vertical class="bg-white" *ngFor="let item of _visitas.visita_activa.cartera"> -->
+                            <ion-card no-margin margin-vertical class="bg-white" *ngFor="let item of _cliente.clienteActual.cartera">
+                                <ion-item>
+                                    <p>
+                                        Obligación: {{item.num_obliga}} {{item.fecha_obl | date: 'shortDate'}}
+                                        <br>
+                                        <ion-badge *ngIf="item.dias_venci>0" slot="start" color="danger" margin-bottom>{{ item.dias_venci }} días de vencida</ion-badge>
+                                        Saldo: {{item.saldo | currency :"USD":true}}
+                                    </p>
+                                </ion-item>
+                                <!-- <ion-item>
+                                    <ion-text slot="start" color="secondary">{{item.fecha_obl | date: 'shortDate'}}</ion-text>
+                                    <ion-text slot="end" color="primary">Obligación: {{item.num_obliga}}</ion-text>
+                                </ion-item>
+                                <ion-item>
+                                    <ion-badge *ngIf="item.dias_venci>0" slot="start" color="danger" margin-bottom>{{ item.dias_venci }} días de vencida</ion-badge>
+                                    <ion-text slot="end" color="primary">Saldo: {{item.saldo | currency :"USD":true}}</ion-text>
+                                </ion-item> -->
+                                <ion-button size="small" shape="round" expand="full" color="warning" (click)="addrecibocaja(item)">
+                                    <ion-icon slot="start" name="book"></ion-icon>
+                                    Pagar
+                                </ion-button>
+                            </ion-card>
+                        </ion-card-content>
+                    </ion-card>
+                </div>
+            </div>
+            <!-- <div *ngSwitchCase="'facturar'">
+                <ion-grid>
+                    <ion-row *ngFor="let item of _visitas.inventario; let i = index;">
+                        <ion-col>
+                            <p>{{ item.cod_refinv }}</p>
+                            <p>{{item.nombre}}</p>
+                            <p>{{ item.precio_ven | currency:'USD':true }}</p>
+                            <ion-button size="small" shape="round" expand="full" color="success" (click)="checkout(visita.id, room.id)">
+                                <ion-icon slot="start" name="cart"></ion-icon>
+                                Agregar a Factura
+                            </ion-button>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+
+            </div> -->
+            <div *ngSwitchCase="'facturar'">
+                <ion-card class="facturaCard">
+                    <ion-toolbar>
+                        <!-- <ion-buttons slot="start" click="_ps.mostrarMenu()">
+                                  <ion-menu-button></ion-menu-button>
+                               </ion-buttons> -->
+                        <ion-searchbar [(ngModel)]="buscar_item" (ionInput)="buscar_productos($event)" placeholder="Buscar producto"></ion-searchbar>
+                        <div *ngIf="searching" class="spinner-container">
+                            <ion-spinner></ion-spinner>
+                        </div>
+                    </ion-toolbar>
+                    <ion-card-header>
+                        <ion-card-subtitle>Inventario Disponible</ion-card-subtitle>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <!-- <ion-card no-margin margin-vertical class="bg-white" *ngFor="let item of _visitas.inventario"> -->
+                        <ion-card no-margin margin-vertical class="bg-white" *ngFor="let item of productos_bus">
+                            <ion-item>
+                                <p>
+                                    {{item.cod_refinv}} {{item.nombre}}
+                                    <br> Existencias: {{item.existencia}} Precio: {{item.precio_ven | currency :"USD":true}}
+                                </p>
+                            </ion-item>
+                            <!-- <ion-button size="small" shape="round" expand="full" color="success" (click)="addfactura(item)"> -->
+                            <ion-button size="small" shape="round" expand="full" color="success" routerLink="/prod-detail/{{item.cod_refinv}}">
+                                <ion-icon slot="start" name="cart"></ion-icon>
+                                Detalle Producto
+                            </ion-button>
+                        </ion-card>
+                    </ion-card-content>
+                </ion-card>
+
+            </div>
+        </div>
+
+    </div>
+
+</ion-content>
+
+
+<ion-footer class="animated fadeIn">
+    <ion-toolbar color="primary">
+        <ion-grid no-padding>
+            <ion-row>
+                <ion-col size="4" no-padding>
+                    <ion-button size="small" shape="round" expand="full" fill="clear" color="tertiary" routerLink="/factura">
+                        <ion-icon slot="start" name="list"></ion-icon>
+                        Factura
+                    </ion-button>
+                </ion-col>
+                <ion-col size="4" no-padding>
+                    <ion-button size="small" shape="round" expand="full" fill="clear" color="tertiary" routerLink="/recibocaja">
+                        <ion-icon slot="start" name="film"></ion-icon>
+                        Recibo
+                    </ion-button>
+                </ion-col>
+                <!-- <ion-col size="4" no-padding>
+                    <ion-button size="small" shape="round" expand="full" fill="clear" color="light" (click)="share()">
+                        <ion-icon slot="start" name="share"></ion-icon>
+                        {{ 'app.button.share' | translate }}
+                    </ion-button>
+                </ion-col> -->
+            </ion-row>
+        </ion-grid>
+    </ion-toolbar>
+</ion-footer>
+
+<!-- Anterior 
+<ion-footer class="animated fadeIn">
+        <ion-toolbar color="primary">
+            <ion-grid no-padding>
+                <ion-row>
+                    <ion-col size="4" no-padding>
+                        <ion-button size="small" shape="round" expand="full" fill="clear" color="tertiary" (click)="favorite(visita)">
+                            <ion-icon slot="start" name="heart"></ion-icon>
+                            Factura
+                        </ion-button>
+                    </ion-col>
+                    <ion-col size="4" no-padding>
+                        <ion-button size="small" shape="round" expand="full" fill="clear" color="tertiary" href="tel:+13174562564">
+                            <ion-icon slot="start" name="call"></ion-icon>
+                            {{ 'app.button.callus' | translate }}
+                        </ion-button>
+                    </ion-col>
+                    <ion-col size="4" no-padding>
+                        <ion-button size="small" shape="round" expand="full" fill="clear" color="light" (click)="share()">
+                            <ion-icon slot="start" name="share"></ion-icon>
+                            {{ 'app.button.share' | translate }}
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-toolbar>
+    </ion-footer> -->

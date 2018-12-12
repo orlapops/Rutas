@@ -1,0 +1,10 @@
+Tue Oct 30 16:18:33 2018
+                   _ns1__EstadoDocumento _ns_EstadoDocumento
+Tue Oct 30 16:18:33 2018
+                _ns1__EstadoDocumentoResponse _ns_EstadoDocumentoResponse
+Tue Oct 30 16:18:33 2018
+                BasicHttpBinding_USCOREIServiceProxy proxy(URI, SOAP_XML_INDENT)
+Tue Oct 30 16:18:33 2018
+                if (proxy.EstadoDocumento(&_ns_EstadoDocumento,_ns_EstadoDocumentoResponse) == SOAP_OK)
+Tue Oct 30 16:18:33 2018
+                *_ns_EstadoDocumentoResponse.EstadoDocumentoResult->codigo == 200

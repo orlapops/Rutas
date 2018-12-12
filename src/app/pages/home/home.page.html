@@ -1,0 +1,389 @@
+<ion-header>
+    <ion-toolbar color="dark" class="animated fadeIn">
+        <ion-buttons slot="start">
+            <ion-menu-button color="tertiary"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            <ion-text color="light">
+                <!-- [placeholder]="translate.get('userlist.search')" -->
+                <!-- {{ 'app.name' | translate }} -->
+                <!-- {{ 'app.name' | translate }} <ion-text color="secondary" class="fw700"> {{ 'app.version' | translate }}</ion-text> -->
+                {{ 'app.name' | translate }}
+            </ion-text>
+        </ion-title>
+        <ion-buttons slot="end">
+            <ion-button icon-left size="small" shape="round" color="tertiary" (click)="messages()">
+                <ion-icon name="mail"></ion-icon>
+            </ion-button>
+            <ion-button icon-left size="small" shape="round" color="tertiary" (click)="editprofile()">
+                <ion-icon name="contact"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content padding class="animated fadeIn fast">
+    <!-- <ion-list>
+        <ion-list-header>
+            Prueba nuevo servicio visitas
+        </ion-list-header>
+        <ion-item *ngFor="let itemvisita of visitnanList | async" (click)="moreBillOptions(itemvisita.cod_tercer)" [class.hide]="itemvisita.estado === 'A'">
+            <ion-icon name="timer" color="danger" slot="end"></ion-icon>
+            <ion-label>
+                <h2>{{itemvisita.cod_tercer}}</h2>
+                <h3>Dirección:
+                    <strong>${{itemvisita.direccion}}</strong>
+                </h3>
+            </ion-label>
+        </ion-item>
+    </ion-list> -->
+
+    <div class="booking-card bg-dark">
+        <ion-fab vertical="center" horizontal="end" slot="fixed">
+            <ion-fab-button color="tertiary" (click)="nuevoRegistroVisita()">
+                <ion-icon name="pin"></ion-icon>
+                <ion-icon name="add"></ion-icon>
+            </ion-fab-button>
+        </ion-fab>
+
+
+        <ion-card class="searchcard animated fadeIn">
+            <ion-card-content no-padding>
+                <ion-grid no-padding>
+                    <ion-row>
+                        <ion-col no-padding>
+                            <ion-searchbar [(ngModel)]="visitalocation" (ionInput)="getItems($event)" (ionCancel)="showItems = !showItems" autocomplete="on" autocorrect="on" spellcheck="true" animated="true" search-icon="pin" color="tertiary" debounce="500" placeholder="Buscar visita..."></ion-searchbar>
+                            <!-- <ion-list class="searchbar-results animated fadeIn" *ngIf="showItems">
+                                <ion-item *ngFor="let item of items" tappable (click)="itemSelected(item)">
+                                    <ion-icon name="pin" slot="start"></ion-icon>
+                                    {{ item }}
+                                </ion-item>
+                            </ion-list> -->
+                        </ion-col>
+                    </ion-row>
+
+                    <!-- <ion-row>
+                        <ion-col size="6" class="br bb datetime-btn" text-center>
+                            <ion-item no-padding text-center>
+                                <ion-label position="stacked" class="fw700 text-primary">
+                                    <ion-icon name="calendar" slot="start" class="text-primary"></ion-icon>
+                                    Entre
+                                </ion-label>
+                                <ion-datetime no-padding class="text-primary" displayFormat="MM/DD/YYYY" pickerFormat="YYYY-MM-DD" min="2016" max="2018" [(ngModel)]="checkin.date"></ion-datetime>
+                            </ion-item>
+                        </ion-col>
+                        <ion-col size="6" class="bb datetime-btn" text-center>
+                            <ion-item no-padding text-center>
+                                <ion-label position="stacked" class="fw700 text-primary">
+                                    <ion-icon name="calendar" slot="start" class="text-primary"></ion-icon>
+                                    Y
+                                </ion-label>
+                                <ion-datetime no-padding class="text-primary" displayFormat="MM/DD/YYYY" pickerFormat="YYYY-MM-DD" min="2016" max="2018" [(ngModel)]="checkout.date"></ion-datetime>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row> -->
+                </ion-grid>
+            </ion-card-content>
+            <ion-card-content>
+                <ion-row>
+                    <ion-col>
+                        <ion-button icon-left shape="round" size="full" color="primary" (click)="viewVisitas()">
+                            <ion-ripple-effect></ion-ripple-effect>
+                            <ion-icon name="search"></ion-icon>
+                            {{ 'app.button.search' | translate }}
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-card-content>
+        </ion-card>
+
+        <ion-text color="primary">
+            <h3>
+                <ion-icon size="small" color="dark" name="map"></ion-icon> {{ 'app.pages.home.title.nearyou' | translate }}</h3>
+        </ion-text>
+
+        <ion-card class="animated fadeIn">
+            <ion-card-content no-padding>
+                <!-- <agm-map [latitude]="_visitas.visitas_pendientes[0].data.latitud" [longitude]="_visitas.visitas_pendientes[0].data.longitud" [zoom]="10" [zoomControl]="false" [styles]="agmStyles" [streetViewControl]="false"> -->
+                <agm-map [latitude]="coords.lat" [longitude]="coords.lng" [zoom]="15" [zoomControl]="false" [styles]="agmStyles" [streetViewControl]="false">
+                    <agm-marker *ngFor="let visita of _visitas.visitas_pendientes" [latitude]="visita.data.latitud" [longitude]="visita.data.longitud">
+                        <agm-info-window>
+                            <ion-item tappable routerLink="/visita-detail/{{visita.id">
+                                <!-- <ion-thumbnail slot="start">
+                                    <img [src]="hotel.thumb">
+                                </ion-thumbnail> -->
+                                <ion-label>
+                                    <h2 [ngClass]="{'fw700 text-white': !true}">
+                                        <div class="fechavisita">
+                                            <ion-icon name="calendar" slot="start" color="secondary" *ngIf="true"></ion-icon>
+                                            <ion-icon name="mail-open" slot="start" color="primary" *ngIf="!true"></ion-icon>
+                                            <ion-text color="primary">{{ _parEmpre.cadafecha(visita.data.fecha_in) | date: 'shortDate'}}</ion-text>
+                                        </div>
+                                        <div class="horavisita">
+                                            <ion-icon name="time" slot="end" color="tertiary" *ngIf="true"></ion-icon>
+                                            <ion-text color="primary"> {{ _parEmpre.cadhoramil(visita.data.hora_in) }}</ion-text>
+                                        </div>
+                                        <!-- <ion-text color="primary">Mensaje</ion-text> -->
+                                    </h2>
+                                    <hr>
+                                    <h2 class="clientevisita">
+                                        <ion-text color="dark"> {{visita.data.nombre}}</ion-text>
+                                    </h2>
+                                    <h3>
+                                        <div class="direcvisita">
+                                            <ion-icon name="pin" slot="start" class="direcvisita"></ion-icon>
+                                            <!-- <p [ngClass]="{'text-light': !true}"> -->
+                                            <ion-text color="dark"> {{visita.data.direccion}} </ion-text>
+                                            <!-- </p> -->
+                                        </div>
+                                    </h3>
+                                    <h4 class="notavisita">
+                                        <p [ngClass]="{'text-light': !true}">
+                                            <ion-text color="dark">{{ visita.data.notas }}</ion-text>
+                                        </p>
+                                    </h4>
+                                </ion-label>
+                            </ion-item>
+                        </agm-info-window>
+                    </agm-marker>
+                </agm-map>
+
+            </ion-card-content>
+        </ion-card>
+        <hr class="bg-tertiary">
+
+        <ion-text color="primary">
+            <h3>
+                <!-- <ion-icon size="small" color="dark" name="bookmark"></ion-icon> {{ 'app.pages.home.title.recommended' | translate }}</h3> -->
+                <ion-icon size="small" color="dark" name="bookmark"></ion-icon> Visitas Pendientes</h3>
+        </ion-text>
+        <ion-card *ngIf="!_visitas.cargo_ruta">
+            <ion-item padding class="animated fadeIn fast">
+                <ion-text color="warning"> Cargando ruta. Por favor espere...</ion-text>
+
+                <ion-spinner name="bubbles"></ion-spinner>
+            </ion-item>
+        </ion-card>
+
+        <ion-card *ngIf="_visitas.cargo_ruta">
+            <ion-list>
+                <ng-container *ngIf="!_visitas.visitas_pendientes || _visitas.visitas_pendientes.length == 0">
+                    <div *ngFor="let n of [0,1,2]" padding>
+                        <ion-skeleton-text></ion-skeleton-text>
+                        <p>
+                            <ion-skeleton-text class="fake-skeleton"></ion-skeleton-text>
+                        </p>
+                    </div>
+                </ng-container>
+
+                <!-- <ion-item color="dark" tappable routerLink="/hotel-detail/{{visita.id}}" *ngFor="let visita of visitas | slice:4:8; let i = index"> -->
+                <ion-item tappable routerLink="/visita-detail/{{visita.id}}" *ngFor="let visita of _visitas.visitas_pendientes">
+                    <ion-label>
+                        <h2 [ngClass]="{'fw700 text-white': !true}">
+                            <div class="fechavisita">
+                                <ion-icon name="calendar" slot="start" color="secondary" *ngIf="true"></ion-icon>
+                                <ion-icon name="mail-open" slot="start" color="primary" *ngIf="!true"></ion-icon>
+                                <!-- <ion-text color="primary">{{visita.fecha_in.toDate() | date: 'shortDate'}}</ion-text> -->
+                                <ion-text color="primary">{{ _parEmpre.cadafecha(visita.data.fecha_in) | date: 'shortDate'}}</ion-text>
+                            </div>
+                            <div class="horavisita">
+                                <ion-icon name="time" slot="end" color="tertiary" *ngIf="true"></ion-icon>
+                                <ion-text color="primary"> {{ _parEmpre.cadhoramil(visita.data.hora_in) }}</ion-text>
+                            </div>
+                            <!-- <ion-text color="primary">Mensaje</ion-text> -->
+                        </h2>
+                        <hr>
+                        <h2 class="clientevisita">
+                            <ion-text color="dark"> {{visita.data.nombre}}</ion-text>
+                        </h2>
+                        <h3>
+                            <div class="direcvisita">
+                                <ion-icon name="pin" slot="start" class="direcvisita"></ion-icon>
+                                <!-- <p [ngClass]="{'text-light': !true}"> -->
+                                <ion-text color="dark"> {{visita.data.direccion}} </ion-text>
+                                <!-- </p> -->
+                            </div>
+                        </h3>
+                        <h4 class="notavisita">
+                            <p [ngClass]="{'text-light': !true}">
+                                <ion-text color="dark">{{ visita.data.notas }}</ion-text>
+                            </p>
+                        </h4>
+                    </ion-label>
+                </ion-item>
+            </ion-list>
+        </ion-card>
+
+        <hr class="bg-tertiary">
+
+        <ion-text color="primary">
+            <h3>
+                <!-- <ion-icon size="small" color="dark" name="bookmark"></ion-icon> {{ 'app.pages.home.title.recommended' | translate }}</h3> -->
+                <ion-icon size="small" color="dark" name="bookmark"></ion-icon> Visitas Cumplidas</h3>
+        </ion-text>
+        <ion-card>
+            <ion-list>
+                <!-- <ion-item color="dark" tappable routerLink="/hotel-detail/{{visita.id}}" *ngFor="let visita of visitas | slice:4:8; let i = index"> -->
+                <ion-item tappable routerLink="/visita-detail/{{visita.id}}" *ngFor="let visita of _visitas.visitas_cumplidas">
+                    <ion-label>
+                        <h2 [ngClass]="{'fw700 text-white': !true}">
+                            <div class="fechavisita">
+                                <ion-icon name="calendar" slot="start" color="secondary" *ngIf="true"></ion-icon>
+                                <ion-icon name="mail-open" slot="start" color="primary" *ngIf="!true"></ion-icon>
+                                <ion-text color="primary">{{ _parEmpre.cadafecha(visita.data.fecha_in) | date: 'shortDate'}}</ion-text>
+                            </div>
+                            <div class="horavisita">
+                                <ion-icon name="time" slot="end" color="tertiary" *ngIf="true"></ion-icon>
+                                <ion-text color="primary"> {{ _parEmpre.cadhoramil(visita.data.hora_in) }}</ion-text>
+                            </div>
+                            <!-- <ion-text color="primary">Mensaje</ion-text> -->
+                        </h2>
+                        <hr>
+                        <h2 class="clientevisita">
+                            <ion-text color="dark"> {{visita.data.nombre}}</ion-text>
+                        </h2>
+                        <h3>
+                            <div class="direcvisita">
+                                <ion-icon name="pin" slot="start" class="direcvisita"></ion-icon>
+                                <!-- <p [ngClass]="{'text-light': !true}"> -->
+                                <ion-text color="dark"> {{visita.data.direccion}} </ion-text>
+                                <!-- </p> -->
+                            </div>
+                        </h3>
+                        <h4 class="notavisita">
+                            <p [ngClass]="{'text-light': !true}">
+                                <ion-text color="dark">{{ visita.data.notas }}</ion-text>
+                            </p>
+                        </h4>
+                    </ion-label>
+                </ion-item>
+            </ion-list>
+        </ion-card>
+        <ion-card *ngIf="_visitas.error_cargarruta">
+            <!-- <ion-card *ngIf="!_visitas.cargo_ruta && _visitas.error_cargarruta"> -->
+            <ion-label>
+                <ion-text color="warning">{{ _visitas.men_errorcargarruta }}</ion-text>
+            </ion-label>
+        </ion-card>
+
+
+
+        <!-- <ion-slides pager="true" margin-bottom>
+            <ion-slide *ngFor="let hotel of hotels | slice:0:4; let i = index">
+                <ion-grid no-padding>
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-card class="hotelsCard" tappable routerLink="/hotel-detail/{{hotel.id}}">
+                                <ion-img [src]="hotel.thumb"></ion-img>
+
+                                <ion-card-subtitle>
+                                    <ion-badge color="warning">
+                                        <ion-icon name="star"></ion-icon> {{ hotel.rating }}
+                                    </ion-badge>
+                                </ion-card-subtitle>
+                                <ion-card-title color="light">{{ hotel.name }}</ion-card-title>
+                                <div class="shadow"></div>
+                                <ion-card-content>
+                                    <ion-badge slot="start" color="dark" class="rooms">
+                                        <ion-icon name="book" color="secondary"></ion-icon>
+                                        {{ hotel.numb_available_rooms }} {{ 'app.pages.home.label.availrooms' | translate }}
+                                    </ion-badge>
+
+                                    <ion-badge slot="end" color="success" class="price">
+                                        <h3><strong>{{ hotel.price | currency:'$':'code' }}</strong></h3>
+                                    </ion-badge>
+                                </ion-card-content>
+                            </ion-card>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+
+            </ion-slide>
+        </ion-slides> -->
+
+
+
+
+        <!-- <ion-card>
+            <ion-list>
+                <ion-item color="dark" tappable routerLink="/hotel-detail/{{hotel.id}}" *ngFor="let hotel of hotels | slice:4:8; let i = index">
+                    <ion-thumbnail slot="start">
+                        <img [src]="hotel.thumb">
+                    </ion-thumbnail>
+                    <ion-label>
+                        <h2><strong>{{ hotel.name }}</strong></h2>
+                        <h3>
+                            <ion-badge slot="start" color="secondary" class="rooms">
+                                <ion-icon name="book" color="tertiary"></ion-icon>
+                                {{ hotel.numb_available_rooms }} {{ 'app.pages.home.label.availrooms' | translate }}
+                            </ion-badge>
+                        </h3>
+                        <ion-badge color="warning">
+                            <ion-icon name="star"></ion-icon> {{ hotel.rating }}
+                        </ion-badge>
+                    </ion-label>
+                </ion-item>
+            </ion-list>
+        </ion-card> -->
+
+
+    </div>
+    <!-- ## -->
+    <!-- ## -->
+    <!-- <popmenu></popmenu> -->
+</ion-content>
+
+<ion-footer class="animated fadeIn">
+    <ion-toolbar color="primary">
+        <ion-grid no-padding>
+            <ion-row>
+                <ion-col size="4" no-padding>
+                    <ion-button size="small" shape="round" expand="full" fill="clear" color="tertiary" routerLink="/factura">
+                        <ion-icon slot="start" name="list"></ion-icon>
+                        Facturando
+                    </ion-button>
+                </ion-col>
+                <ion-col size="4" no-padding>
+                    <ion-button size="small" shape="round" expand="full" fill="clear" color="tertiary" routerLink="/recibocaja">
+                        <ion-icon slot="start" name="film"></ion-icon>
+                        Recaudando
+                    </ion-button>
+                </ion-col>
+                <ion-col size="4" no-padding>
+                    <ion-button size="small" shape="round" expand="full" fill="clear" color="light" (click)="settings()">
+                        <ion-icon slot="start" name="cog"></ion-icon>
+                        Configuración
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-toolbar>
+</ion-footer>
+
+<!-- Antes
+
+<ion-footer class="animated fadeIn">
+        <ion-toolbar color="primary">
+            <ion-grid no-padding>
+                <ion-row>
+                    <ion-col size="4" no-padding>
+                        <ion-button size="small" shape="round" expand="full" fill="clear" color="tertiary" routerLink="/rentcar">
+                            <ion-icon slot="start" name="car"></ion-icon>
+                            {{ 'app.pages.menu.rentacar' | translate }}
+                        </ion-button>
+                    </ion-col>
+                    <ion-col size="4" no-padding>
+                        <ion-button size="small" shape="round" expand="full" fill="clear" color="tertiary" routerLink="/activities">
+                            <ion-icon slot="start" name="beer"></ion-icon>
+                            Actividades
+                        </ion-button>
+                    </ion-col>
+                    <ion-col size="4" no-padding>
+                        <ion-button size="small" shape="round" expand="full" fill="clear" color="light" (click)="settings()">
+                            <ion-icon slot="start" name="cog"></ion-icon>
+                            Configuración
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-toolbar>
+    </ion-footer> -->

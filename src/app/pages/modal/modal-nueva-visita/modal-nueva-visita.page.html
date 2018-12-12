@@ -1,0 +1,45 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>Registrar Nueva Visita</ion-title>
+        <ion-buttons slot="end">
+            <ion-button size="small" shape="round" (click)="cerrarModal()" color="tertiary">
+                <ion-icon slot="start" name="close"></ion-icon> Cerrar
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <!-- <ion-toolbar color="primary">
+        <ion-searchbar type="text" placeholder="Find location" animated="true" (ionInput)="setFilteredItems($event)"></ion-searchbar>
+    </ion-toolbar> -->
+</ion-header>
+
+
+<ion-content padding>
+    <ion-card>
+        <ion-card-header>
+            Localización actual
+        </ion-card-header>
+        <ion-card-content>
+            <p><strong>latitud:</strong>{{coords.lat}}<br/>
+                <strong>longitud:</strong>{{coords.lng}}
+            </p>
+            <hr>
+            <p>{{address}}</p>
+            <hr/>
+            <form (ngSubmit)="guardarNuevaVisita()">
+                <ion-item>
+                    <img [src]="foto" *ngIf="foto" />
+                    <button ion-button icon-left full type="button" (tap)="sacarFoto()">
+                  Foto &nbsp;&nbsp;
+                  <ion-icon name="camera"></ion-icon>
+                </button>
+                </ion-item>
+                <hr/>
+                <ion-item>
+                    <ion-label>Descripción</ion-label>
+                    <ion-textarea [(ngModel)]="description" name="description"></ion-textarea>
+                </ion-item>
+                <button ion-button type="submit" block>Guardar Sitio</button>
+            </form>
+        </ion-card-content>
+    </ion-card>
+</ion-content>

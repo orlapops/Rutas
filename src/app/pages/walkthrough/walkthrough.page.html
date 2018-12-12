@@ -1,0 +1,43 @@
+<ion-content>
+
+    <ion-slides pager="true" dir="ltr" options="slideOpts">
+        <ion-slide *ngFor="let slide of slideList" class="bg-profile">
+            <div padding>
+                <img [src]="slide.image" margin-bottom class="slide-image animated fadeInDown slow">
+                <h3 class="slide-title text-white animated fadeIn" [innerHTML]="slide.title"></h3>
+                <ion-text color="light">
+                    <p [innerHTML]="slide.description" class="animated fadeIn"></p>
+                </ion-text>
+
+                <!-- <ion-button icon-left expand="full" shape="round" color="secondary" margin-top (click)="onSlideNext()"> -->
+                <ion-button icon-left expand="full" shape="round" color="tertiary" margin-top (click)="onSlideNext()">
+                    Siguiente
+                    <ion-icon name="arrow-round-forward" color="light"></ion-icon>
+                </ion-button>
+            </div>
+
+            <!-- <div padding>
+
+            </div> -->
+        </ion-slide>
+        <ion-slide class="bg-profile">
+            <div class="w100" padding>
+                <!-- <img src="assets/img/ionbooking-ico.png" class="slide-image animated fadeInDown slow"> -->
+                <img src="assets/img/netsolin-logo3.png" class="slide-image animated fadeInDown slow">
+                <h2 class="slide-title text-white" margin-bottom>Su empresa movil. Listo?</h2>
+
+                <hr>
+
+                <!-- <ion-button expand="full" shape="round" color="secondary" margin-top (click)="openLoginPage()"> -->
+                <ion-button expand="full" shape="round" color="tertiary" margin-top (click)="openLoginPage()">
+                    Ingresar
+                </ion-button>
+                <!-- <ion-button expand="full" shape="round" color="dark" margin-top (click)="openHomePage()">
+                Get Started
+              </ion-button> -->
+            </div>
+
+        </ion-slide>
+    </ion-slides>
+
+</ion-content>

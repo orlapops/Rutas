@@ -1,0 +1,53 @@
+<ion-content padding class="animated fadeIn login auth-page">
+    <div class="auth-content">
+        <!-- Logo -->
+        <div padding-horizontal text-center class="animated fadeInDown">
+            <div class="logo"></div>
+            <!-- <h4 no-margin>
+                <ion-text color="light">
+                    {{ 'app.name' | translate }}
+                    <ion-text color="secondary" class="fw700"> {{ 'app.version' | translate }}</ion-text>
+                </ion-text>
+            </h4> -->
+        </div>
+        <!-- Register form -->
+        <form [formGroup]="onRegisterForm" class="list-form">
+            <ion-item no-padding class="animated fadeInUp">
+                <ion-label position="floating">
+                    <ion-icon name="person" item-start></ion-icon>
+                    Nit Empresa registrada
+                </ion-label>
+                <ion-input color="secondary" type="text" formControlName="nitEmpre"></ion-input>
+            </ion-item>
+            <p ion-text class="text08" *ngIf="onRegisterForm.get('nitEmpre').touched && onRegisterForm.get('nitEmpre').hasError('required')">
+                <ion-text color="danger">
+                    Este campo es requerido
+                </ion-text>
+            </p>
+        </form>
+
+        <div margin-top>
+            <ion-button icon-left size="medium" expand="full" shape="round" color="tertiary" (click)="registrar()" [disabled]="!onRegisterForm.valid" tappable>
+                <ion-icon name="log-in"></ion-icon>
+                Verificar Licencia
+            </ion-button>
+        </div>
+    </div>
+</ion-content>
+<!-- <ion-content padding text-center>
+    <img src="assets/imgs/netsolin-logo3.png">
+    <ion-list>
+        <form>
+            <ion-item>
+                <ion-label position="floating">Nit Empresa registrada</ion-label>
+                <ion-input [(ngModel)]="empre.nit" name="nite" type="text" autocapitalize="none" required>
+                </ion-input>
+            </ion-item>
+            <div padding>
+                <ion-button shape="round" color="primary" fill="solid" (click)="registrar()">
+                    Verificar Licencia
+                </ion-button>
+            </div>
+        </form>
+    </ion-list>
+</ion-content> -->

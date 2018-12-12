@@ -1,0 +1,145 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>Items a Facturar</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="animated fadeIn">
+    <div text-center *ngIf="factura.length === 0" class="carrito_vacio">
+
+        <ion-icon name="ios-cart-outline" class="icon-5x"></ion-icon>
+        <br> No tiene items a Facturar
+    </div>
+    <div *ngIf="factura.length != 0" class="bg-white">
+        <ion-grid class="bg-white">
+            <ion-row *ngFor="let itemf of factura; let i = index;">
+                <ion-col>
+                    <!-- <img src='data:image/jpeg;base64,{{item.imagen_pequena}}'> -->
+                    <img class="imagen" src="assets/img/DUCHA.jpg">
+                </ion-col>
+                <ion-col>
+                    <ion-card class="bg-white">
+                        <ion-text color="primary" slot="start" tappable routerLink="/prod-detail/{{itemf.item.cod_ref}}">
+                            {{itemf.item.cod_ref}} {{itemf.item.nombre}}
+                        </ion-text>
+                        <ion-input slot="start" (ionChange)="total(itemf,i)" [(ngModel)]="itemf.item.cantidad" type="number" min="1" max="1000" step="1" placeholder="Cantidad" clearOnEdit="true">
+                        </ion-input>
+                        <ion-text color="success" slot="end">
+                            Total: {{ itemf.item.total | currency }}
+                        </ion-text>
+                        <ion-button slot="end" shape="round" color="danger" (click)="deleteItem(itemf)">
+                            Eliminar
+                        </ion-button>
+                    </ion-card>
+                    <!-- <ion-card>
+                        <ion-row>
+                        </ion-row>
+
+                        <p>{{itemf.item.cod_ref}} {{itemf.item.nombre}}</p>
+                        <ion-row>
+                            <ion-input slot="start" (ionChange)="total()" [(ngModel)]="itemf.item.cantidad" type="number" min="1" max="1000" step="1" placeholder="Cantidad" clearOnEdit="true">
+                            </ion-input>
+                            <ion-text color="success" slot="end">
+                                Total: {{ itemf.item.total | currency }}
+                            </ion-text>
+                        </ion-row>
+                        <br>
+                        <p>{{itemf.item.cantidad }} {{itemf.item.precio_ven | currency }} Total: {{itemf.item.total | currency }}</p>
+                        <ion-button slot="end" shape="round" color="danger" (click)="deleteItem(itemf)">
+                            Eliminar
+                        </ion-button>
+                    </ion-card> -->
+                </ion-col>
+            </ion-row>
+            <!-- <ion-row>
+            <ion-col size="12" margin-bottom>
+                <ion-card *ngIf="!factura.length" class="bg-white" margin-top>
+                    <ion-card-content>
+                        <p text-center>
+                            <ion-text color="primary">No tiene Items en factura</ion-text>
+                        </p>
+                    </ion-card-content>
+                </ion-card>
+
+                <ion-list>
+                    <ion-item-sliding *ngFor="let itemf of factura">
+                        <ion-item tappable routerLink="/prod-detail/{{itemf.item.cod_ref}}">
+                            <ion-label>
+                                <h4>
+                                    <ion-text color="primary">{{itemf.item.cod_ref}} {{itemf.item.nombre}}</ion-text>
+                                </h4>
+                                <p>Cantidad:{{itemf.item.cantidad }} {{itemf.item.precio_ven | currency }} Total: {{itemf.item.total | currency }}</p>
+                            </ion-label>
+                        </ion-item>
+                        <ion-item-options side="end">
+                            <ion-item-option color="danger" (click)="deleteItem(itemf)">Eliminar Item</ion-item-option>
+                        </ion-item-options>
+                    </ion-item-sliding>
+                </ion-list>
+
+            </ion-col>
+        </ion-row> -->
+        </ion-grid>
+
+        <hr>
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <h3>
+                        <strong>Total:</strong>
+                    </h3>
+                </ion-col>
+                <ion-col>
+                    <h3>
+                        <strong> {{ total_fact | currency }}</strong>
+                    </h3>
+                </ion-col>
+
+            </ion-row>
+        </ion-grid>
+        <ion-button slot="end" shape="round" color="success" (click)="realizar_factura()">
+            Realizar factura
+        </ion-button>
+
+
+    </div>
+</ion-content>
+<!-- Anterior -->
+<!-- <ion-content class="animated fadeIn">
+    <ion-grid>
+        <ion-row>
+            <ion-col size="12" margin-bottom>
+                <ion-card *ngIf="!favorites.length" class="bg-white" margin-top>
+                    <ion-card-content>
+                        <p text-center>
+                            <ion-text color="primary">No tiene Items en factura</ion-text>
+                        </p>
+                    </ion-card-content>
+                </ion-card>
+
+                <ion-list>
+                    <ion-item-sliding *ngFor="let favorite of favorites">
+                        <ion-item tappable routerLink="/hotel-detail/{{favorite.hotel.id}}">
+                            <ion-thumbnail slot="start">
+                                <img [src]="favorite.hotel.thumb">
+                            </ion-thumbnail>
+                            <ion-label>
+                                <h2>
+                                    <ion-text color="primary">{{favorite.hotel.name}}</ion-text>
+                                </h2>
+                                <p>{{favorite.hotel.address}} ∙ {{favorite.hotel.price | currency }}</p>
+                            </ion-label>
+                        </ion-item>
+                        <ion-item-options side="end">
+                            <ion-item-option color="danger" (click)="deleteItem(favorite)">{{ 'app.label.remove' | translate }}</ion-item-option>
+                        </ion-item-options>
+                    </ion-item-sliding>
+                </ion-list>
+
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content> -->
